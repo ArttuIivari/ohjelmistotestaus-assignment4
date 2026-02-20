@@ -4,7 +4,7 @@ import { app } from '../index'
 import { Request, Response } from 'express'
 import * as dogController from '../controllers/dogController'
 
-//vi.mock('../controllers/currencyController')
+
 vi.mock('../controllers/dogController')
 
 describe('Dog routes', () => {
@@ -20,16 +20,24 @@ describe('Dog routes', () => {
     test('GET /api/dogs/random returns a dog image', async () => {
         vi.mocked(dogController.getDogImage).mockImplementation(
             async (_req: Request, res: Response) => {
-                res.status(200).json({ 
-                    message: "https://images.dog.ceo/breeds/spaniel-irish/n02102973_4794.jpg",
-                    status: "success" })
+                res.status(200).json({
+                    success: true,
+                    data: {
+                        message: "https://images.dog.ceo/breeds/spaniel-irish/n02102973_4794.jpg",
+                        status: "success"
+                    }
+                })
             })
         const res = await request(app)
             .get('/api/dogs/random')
         expect(res.status).toBe(200)
-        expect(res.body).toEqual({ 
-                    message: "https://images.dog.ceo/breeds/spaniel-irish/n02102973_4794.jpg",
-                    status: "success" })
+        expect(res.body).toEqual({
+            success: true,
+            data: {
+                message: "https://images.dog.ceo/breeds/spaniel-irish/n02102973_4794.jpg",
+                status: "success"
+            }
+        })
     })
 
 
@@ -37,15 +45,17 @@ describe('Dog routes', () => {
     test('GET /api/dogs/random returns 500 for network error', async () => {
         vi.mocked(dogController.getDogImage).mockImplementation(
             async (_req: Request, res: Response) => {
-                res.status(500).json({ 
-                    error: "Failed to fetch dog image: Network error",
-                    success: false })
+                res.status(500).json({
+                    success: false,
+                    error: "Failed to fetch dog image: Network error"
+                })
             })
         const res = await request(app)
             .get('/api/dogs/random')
         expect(res.status).toBe(500)
-        expect(res.body).toEqual({ 
-                    error: "Failed to fetch dog image: Network error",
-                    success: false })
+        expect(res.body).toEqual({
+            success: false,
+            error: "Failed to fetch dog image: Network error"
+        })
     })
 })
