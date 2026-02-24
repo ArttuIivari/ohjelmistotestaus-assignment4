@@ -23,7 +23,7 @@ describe('dogController.getDogImage', () => {
             }
         }
         vi.mocked(dogService.getRandomDogImage).mockResolvedValue(payload.data)
-        
+
         await getDogImage(req, res)
 
         expect(res.json).toHaveBeenCalledWith({
